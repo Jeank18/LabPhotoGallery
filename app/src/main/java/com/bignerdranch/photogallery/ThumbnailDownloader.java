@@ -80,6 +80,18 @@ public class ThumbnailDownloader<T> extends HandlerThread {
             final Bitmap bitmap = BitmapFactory
                     .decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
             Log.i(TAG, "Bitmap created");
+
+            mResponseHandler.post(new Runnable(){  // cambios página 516
+                public void run(){ // cambios página 516
+                    if (mRequestMap.get(target) != url ||
+                    mHasQuit){ // cambios página 516
+                        return; // cambios página 516
+                    }
+
+                    mRequestMap.remove(target); // cambios página 516
+                    mThumbnailDownloadListener.onThumbnailDownloaded(target, bitmap); // cambios página 516
+                }
+            }); // cambios página 516, hasta aquí
         } catch (IOException ioe){
             Log.e(TAG, "Error downloading image", ioe);
         }
