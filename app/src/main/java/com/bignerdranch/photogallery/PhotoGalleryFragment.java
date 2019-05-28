@@ -83,6 +83,7 @@ public class PhotoGalleryFragment extends Fragment {
             // photoHolder.bindGalleryItem(galleryItem); se cambia en página 501
             Drawable placeholder = getResources().getDrawable(R.drawable.bill_up_close);
             photoHolder.bindDrawable(placeholder);
+            mThumbnailDownloader.queueThumbnail(photoHolder, galleryItem.getUrl()); // Se cambia en página 506
 
         }
 
