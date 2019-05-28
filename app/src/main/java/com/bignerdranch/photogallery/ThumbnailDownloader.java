@@ -1,3 +1,5 @@
+// Esta clase se crea en la página 504
+
 package com.bignerdranch.photogallery;
 
 import android.os.HandlerThread;

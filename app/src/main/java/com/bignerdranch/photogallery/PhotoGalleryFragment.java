@@ -27,12 +27,18 @@ public class PhotoGalleryFragment extends Fragment {
     private static final String TAG = "PhotoGalleryFragment";
     private RecyclerView mPhotoRecyclerView;
     private List<GalleryItem> mItems = new ArrayList<>();
+    private ThumbnailDownloader<PhotoHolder> mThumbnailDownloader; // se crea en página 505
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         new FetchItemsTask().execute();
+
+        mThumbnailDownloader = new ThumbnailDownloader<>(); //se crea en página 505
+        mThumbnailDownloader.start(); //se crea en página 505
+        mThumbnailDownloader.getLooper(); //se crea en página 505
+        Log.i(TAG, "Background thread started"); //se crea en página 505
     }
 
     private class PhotoHolder extends  RecyclerView.ViewHolder {
@@ -114,6 +120,13 @@ public class PhotoGalleryFragment extends Fragment {
         mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         setupAdapter();
         return v;
+    }
+
+    @Override // se crea en página 505
+    public void onDestroy(){ //se crea en página 505
+        super.onDestroy(); //se crea en página 505
+        mThumbnailDownloader.quit(); //se crea en página 505
+        Log.i(TAG, "Background thread destroyed"); //se crea en página 505
     }
 
     private void setupAdapter() {
