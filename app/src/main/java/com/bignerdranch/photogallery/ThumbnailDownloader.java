@@ -20,9 +20,20 @@ public class ThumbnailDownloader<T> extends HandlerThread {
     private boolean mHasQuit = false;
     private Handler mRequestHandler; // se crea en página 509
     private ConcurrentMap<T, String> mRequestMap = new ConcurrentHashMap<>(); // se crea en página 509
+    private Handler mResponseHandler; // cambios de página 514
+    private ThumbnailDownloadListener<T> mThumbnailDownloadListener;// cambios de página 514
 
-    public ThumbnailDownloader(){
+    public interface ThumbnailDownloadListener<T>{ // cambios de página 514
+        void onThumbnailDownloaded(T target, Bitmap thumbnail); // cambios de página 514
+    }
+
+    public void setThumbnailDownloadListener(ThumbnailDownloadListener<T> listener){ // cambios de página 514
+        mThumbnailDownloadListener = listener; // cambios de página 514
+    }
+
+    public ThumbnailDownloader(Handler responseHandler){ // cambios de página 514
         super(TAG);
+        mResponseHandler = responseHandler; // cambios de página 514
     }
 
     @Override // Cambios de página 511
