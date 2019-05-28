@@ -1,9 +1,12 @@
 package com.bignerdranch.photogallery;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -35,7 +38,18 @@ public class PhotoGalleryFragment extends Fragment {
         setRetainInstance(true);
         new FetchItemsTask().execute();
 
-        mThumbnailDownloader = new ThumbnailDownloader<>(); //se crea en página 505
+        Handler responseHandler = new Handler(); // cambio de página 515
+        mThumbnailDownloader = new ThumbnailDownloader<>(responseHandler); //se crea en página 505
+        mThumbnailDownloader.setThumbnailDownloadListener( // cambio de página 515
+                new ThumbnailDownloader.ThumbnailDownloadListener<PhotoHolder>(){ // cambio de página 515
+                    @Override // cambio de página 515
+                    public void onThumbnailDownloaded(PhotoHolder photoHolder,
+                                                      Bitmap bitmap){ // cambio de página 515
+                        Drawable drawable = new BitmapDrawable(getResources(), bitmap);// cambio de página 515
+                        photoHolder.bindDrawable(drawable);
+                    }
+                }
+        ); // cambio de página 515, hasta aquí
         mThumbnailDownloader.start(); //se crea en página 505
         mThumbnailDownloader.getLooper(); //se crea en página 505
         Log.i(TAG, "Background thread started"); //se crea en página 505
