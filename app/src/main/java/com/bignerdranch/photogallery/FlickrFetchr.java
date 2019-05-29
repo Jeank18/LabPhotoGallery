@@ -20,6 +20,17 @@ public class FlickrFetchr {
     private static final String TAG = "FlickrFetchr";
     private static final String API_KEY = "c7bd15f062392f918ba54bef8c3106a1";
     //secret "0c71d9ce2caef7b4"
+    private static final String FETCH_RECENTS_METHOD = "flickr.photos.getRecent"; // cambios de página 522
+    private static final String SEARCH_METHOD = "flickr.photos.search"; // cambios de página 522
+    private static final Uri ENDPOINT = Uri
+            .parse("https://api.flickr.com/services/rest/")
+            .buildUpon()
+            .appendQueryParameter("api_key", API_KEY)
+            .appendQueryParameter("format", "json")
+            .appendQueryParameter("nojsoncallback", "1")
+            .appendQueryParameter("extras", "url_s")
+            .build(); // cambios de página 522
+
 
     public byte[] getUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
@@ -46,35 +57,56 @@ public class FlickrFetchr {
         }
     }
 
-    public List<GalleryItem> fetchItems() {
+  // public List<GalleryItem> fetchItems() {
+  public List<GalleryItem> downloadGalleryItems(String url) { // se cambia en página 523
         List<GalleryItem> items = new ArrayList<>();
         try {
-            String url = Uri.parse("https://api.flickr.com/services/rest/")
-                    .buildUpon()
-                    .appendQueryParameter("method", "flickr.photos.getRecent")
 
-                    .appendQueryParameter("api_key", API_KEY)
-                    .appendQueryParameter("format", "json")
-                    .appendQueryParameter("nojsoncallback", "1")
-                    .appendQueryParameter("extras", "url_s")
-                    .build().toString();
+           //esto se cambia en pagina 522 String url = Uri.parse("https://api.flickr.com/services/rest/")
+             //       .buildUpon()
+               //     .appendQueryParameter("method", "flickr.photos.getRecent")
+
+                 //   .appendQueryParameter("api_key", API_KEY)
+                   // .appendQueryParameter("format", "json")
+               //     .appendQueryParameter("nojsoncallback", "1")
+                 //   .appendQueryParameter("extras", "url_s")
+                   // .build().toString();
             String jsonString = getUrlString(url);
             Log.i(TAG, "Received JSON: " + jsonString);
-
-            try {
                 JSONObject jsonBody = new JSONObject(jsonString);
                 parseItems(items, jsonBody);
-            } catch (JSONException e) {
-                Log.e(TAG, "Failed to parse JSON", e);
-            }
+            } catch (JSONException je) {
+                Log.e(TAG, "Failed to parse JSON", je);
+
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch items", ioe);
         }
         return items;
     }
 
+    private String buildUrl(String method, String query){ // se crea en página 523
+        Uri.Builder uriBuilder = ENDPOINT.buildUpon()
+                .appendQueryParameter("method", method); // se crea en página 523
+
+        if (method.equals(SEARCH_METHOD)){
+            uriBuilder.appendQueryParameter("text", query);// se crea en página 523
+        }
+
+        return uriBuilder.build().toString();// se crea en página 523
+    } // se crea en página 523 hasta aquí
+
     public String getUrlString(String urlSpec) throws IOException {
         return new String(getUrlBytes(urlSpec));
+    }
+
+    public List<GalleryItem> fetchRecentPhotos(){ // se crea en pagina 524
+        String url = buildUrl(FETCH_RECENTS_METHOD, null);
+        return downloadGalleryItems(url);
+    }
+
+    public List<GalleryItem> searchPhotos(String query){ // se crea en pagina 524
+        String url = buildUrl(SEARCH_METHOD, query);
+        return downloadGalleryItems(url);
     }
 
     private void parseItems(List<GalleryItem> items, JSONObject jsonBody) throws JSONException {
