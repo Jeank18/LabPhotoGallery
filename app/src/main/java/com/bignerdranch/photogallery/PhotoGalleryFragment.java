@@ -113,16 +113,27 @@ public class PhotoGalleryFragment extends Fragment {
         }
     }
 
+    private void updateItems(){
+        String query = QueryPreferences.getStoredQuery(getActivity());// se crea en página 535
+        new FetchItemsTask(query).execute(); // se crea en página 535
+    }
+
     private class FetchItemsTask extends AsyncTask<Void, Void, List<GalleryItem>> {
+        private String mQuery;
+
+        public FetchItemsTask(String query){
+            mQuery = query;
+        }
+
         @Override
         protected List<GalleryItem> doInBackground(Void... params) {
            // return new FlickrFetchr().fetchItems(); se quita en página 525
-            String query = "robot"; // solamente para probar en pagina 525
+           // String query = "robot"; // solamente para probar en pagina 525, se quita en página 535
 
-            if (query == null){ // cambios de página 525
+            if (mQuery == null){ // cambios de página 525
                 return new FlickrFetchr().fetchRecentPhotos(); // cambios de página 525
             }else{
-                return new FlickrFetchr().searchPhotos(query); // cambios de página 525
+                return new FlickrFetchr().searchPhotos(mQuery); // cambios de página 525
             }
         } // cambios de página 525, hasta aquí
 
@@ -166,6 +177,7 @@ public class PhotoGalleryFragment extends Fragment {
     @Override// se crea en página 528
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater){
         super.onCreateOptionsMenu(menu, menuInflater);
+       // menuInflater.inflate(R.menu.fragment_photo_gallery, menu);
         menuInflater.inflate(R.menu.fragment_photo_gallery, menu);
 
         MenuItem searchItem = menu.findItem(R.id.menu_item_search); // se crea en página 530
@@ -175,6 +187,7 @@ public class PhotoGalleryFragment extends Fragment {
             @Override // se crea en página 530
             public boolean onQueryTextSubmit(String s) {
                 Log.d(TAG, "QueryTextSubmit: " + s);
+                QueryPreferences.setStoredQuery(getActivity(), s); // se crea en página 533
                 updateItems();
                 return true;
             }
@@ -184,11 +197,28 @@ public class PhotoGalleryFragment extends Fragment {
                 Log.d(TAG, "QueryTextChange: " + s);
                 return false;
             }
+
         }); // se crea en página 530 hasta aquí
+
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String query = QueryPreferences.getStoredQuery(getActivity());
+                searchView.setQuery(query, false);
+            }
+        });
     }
 
-    private void updateItems(){
-        new FetchItemsTask().execute();
+    @Override // se crea en página 534
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getGroupId()){
+            case R.id.menu_item_clear:
+                QueryPreferences.setStoredQuery(getActivity(), null);
+                updateItems();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void setupAdapter() {
