@@ -13,10 +13,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -36,7 +40,9 @@ public class PhotoGalleryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        new FetchItemsTask().execute();
+        setHasOptionsMenu(true); // se crea en página 528
+     //   new FetchItemsTask().execute(); se quita en página 531
+        updateItems(); // se crea en página 531
 
         Handler responseHandler = new Handler(); // cambio de página 515
         mThumbnailDownloader = new ThumbnailDownloader<>(responseHandler); //se crea en página 505
@@ -155,6 +161,34 @@ public class PhotoGalleryFragment extends Fragment {
         super.onDestroy(); //se crea en página 505
         mThumbnailDownloader.quit(); //se crea en página 505
         Log.i(TAG, "Background thread destroyed"); //se crea en página 505
+    }
+
+    @Override// se crea en página 528
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater){
+        super.onCreateOptionsMenu(menu, menuInflater);
+        menuInflater.inflate(R.menu.fragment_photo_gallery, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.menu_item_search); // se crea en página 530
+        final SearchView searchView = (SearchView) searchItem.getActionView(); // se crea en página 530
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() { // se crea en página 530
+            @Override // se crea en página 530
+            public boolean onQueryTextSubmit(String s) {
+                Log.d(TAG, "QueryTextSubmit: " + s);
+                updateItems();
+                return true;
+            }
+
+            @Override // se crea en página 530
+            public boolean onQueryTextChange(String s){
+                Log.d(TAG, "QueryTextChange: " + s);
+                return false;
+            }
+        }); // se crea en página 530 hasta aquí
+    }
+
+    private void updateItems(){
+        new FetchItemsTask().execute();
     }
 
     private void setupAdapter() {
