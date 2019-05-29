@@ -110,8 +110,15 @@ public class PhotoGalleryFragment extends Fragment {
     private class FetchItemsTask extends AsyncTask<Void, Void, List<GalleryItem>> {
         @Override
         protected List<GalleryItem> doInBackground(Void... params) {
-            return new FlickrFetchr().fetchItems();
-        }
+           // return new FlickrFetchr().fetchItems(); se quita en página 525
+            String query = "robot"; // solamente para probar en pagina 525
+
+            if (query == null){ // cambios de página 525
+                return new FlickrFetchr().fetchRecentPhotos(); // cambios de página 525
+            }else{
+                return new FlickrFetchr().searchPhotos(query); // cambios de página 525
+            }
+        } // cambios de página 525, hasta aquí
 
         @Override
         protected void onPostExecute(List<GalleryItem> items) {
