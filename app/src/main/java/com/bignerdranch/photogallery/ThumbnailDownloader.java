@@ -68,6 +68,11 @@ public class ThumbnailDownloader<T> extends HandlerThread {
         } // hasta aquí
     }
 
+    public void clearQueue(){ // cambios de página 517
+        mRequestHandler.removeMessages(MESSAGE_DOWNLOAD); // cambios de página 517
+        mRequestMap.clear(); // cambios de página 517
+    } // cambios de página 517
+
     private void handleRequest(final T target){ // Cambios de página 511
         try {
             final String url = mRequestMap.get(target);

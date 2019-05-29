@@ -137,6 +137,12 @@ public class PhotoGalleryFragment extends Fragment {
         return v;
     }
 
+    @Override // cambios de página 517
+    public void onDestroyView(){ // cambios de página 517
+        super.onDestroyView(); // cambios de página 517
+        mThumbnailDownloader.clearQueue(); // cambios de página 517
+    }
+
     @Override // se crea en página 505
     public void onDestroy(){ //se crea en página 505
         super.onDestroy(); //se crea en página 505
