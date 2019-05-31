@@ -176,8 +176,8 @@ public class PhotoGalleryFragment extends Fragment {
 
     @Override// se crea en página 528
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater){
+
         super.onCreateOptionsMenu(menu, menuInflater);
-       // menuInflater.inflate(R.menu.fragment_photo_gallery, menu);
         menuInflater.inflate(R.menu.fragment_photo_gallery, menu);
 
         MenuItem searchItem = menu.findItem(R.id.menu_item_search); // se crea en página 530
